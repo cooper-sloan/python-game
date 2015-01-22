@@ -12,6 +12,7 @@ class Obstacle(pygame.sprite.Sprite):
         self.rect.x, self.rect.y = (750, 330)
         self.vel=vel
         self.score=0
+        self.is_up = False
 
     def set_pos(self, x, y):
         self.rect.x, self.rect.y = x, y
@@ -23,6 +24,7 @@ class Obstacle(pygame.sprite.Sprite):
         self.set_pos(self.rect.x-self.vel, self.rect.y)
         if self.rect.x < 0:
             self.rect.x = 850
+            self.switch_loc()
             self.score+=1
 
     def set_vel(self, vel):
@@ -30,3 +32,11 @@ class Obstacle(pygame.sprite.Sprite):
 
     def reset(self):
         self.vel =10
+
+    def switch_loc(self):
+        if self.is_up:
+            self.set_pos(self.rect.x, self.rect.y+15)
+            self.is_up=False
+        else:
+            self.set_pos(self.rect.x, self.rect.y-15)
+            self.is_up=True

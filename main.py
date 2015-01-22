@@ -45,7 +45,10 @@ class Runner:
         while pygame.QUIT not in events:
             self.screen.fill((0,100,150))
             if pygame.MOUSEBUTTONDOWN in events:
-                self.player.jump()
+                if self.obstacle.is_up:
+                    self.player.roll()
+                else:
+                    self.player.jump()
             #time.sleep(.01)
 
             #Check for collisions
@@ -66,6 +69,7 @@ class Runner:
                     self.obstacle.reset()
                     self.obstacle.score=0
                     self.update_velocity(10)
+                    print "reset"
                     
             events = [event.type for event in pygame.event.get()]
         pygame.quit()
@@ -88,14 +92,17 @@ class Runner:
         self.backdrop2.move()
         if self.player.in_air:
             self.player.tick()
+        if self.player.on_ground:
+            self.player.tick()
         pygame.display.flip()
 
     def check_collision(self):
         if self.obstacle.rect.x+self.obstacle.WIDTH-15>self.player.rect.x and self.obstacle.rect.x<self.player.rect.x+50:
-            if not self.player.in_air or self.player.on_ground:
-                self.playing = False
-            else:
+            if self.player.in_air or self.player.on_ground:
                 pass
+            else:
+                if self.obstacle.score>0:
+                    self.playing = False
         else:
             pass
 
