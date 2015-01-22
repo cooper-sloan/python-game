@@ -18,5 +18,8 @@ class Background(pygame.sprite.Sprite):
 
     def move(self):
         self.set_pos(self.rect.x-self.vel, self.rect.y)
-        if self.rect.x < -800:
-            self.rect.x = 790
+        if self.rect.x <= -800:
+            self.rect.x = 800
+            
+    def set_vel(self, vel):
+        self.vel =vel

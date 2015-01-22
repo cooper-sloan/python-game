@@ -46,7 +46,7 @@ class Runner:
             self.screen.fill((0,100,150))
             if pygame.MOUSEBUTTONDOWN in events:
                 self.player.jump()
-            time.sleep(.01)
+            #time.sleep(.01)
 
             #Check for collisions
             self.check_collision()
@@ -61,22 +61,28 @@ class Runner:
 
                 #Restart game, reset character
                 if pygame.MOUSEBUTTONDOWN in events:
-                    self.playing=True
+                    self.playing = True
                     self.player.reset()
                     self.obstacle.reset()
                     self.obstacle.score=0
+                    self.update_velocity(10)
+                    
             events = [event.type for event in pygame.event.get()]
         pygame.quit()
 
     
     #Update the display with all of the sprites
     def update(self):
-        if self.obstacle.score>2:
-            self.obstacle.set_vel(20)
-            self.player.set_jump_time(8)
+        if self.obstacle.score>5:
+            self.update_velocity(15)
+            if self.obstacle.score>10:
+                self.update_velocity(20)
+                if self.obstacle.score>20:
+                    self.update_velocity(25)
         self.backdrops.draw(self.screen)
         self.obstacles.draw(self.screen)
         self.obstacle.move()
+        self.player.next_image()
         self.players.draw(self.screen)
         self.backdrop.move()
         self.backdrop2.move()
@@ -85,13 +91,19 @@ class Runner:
         pygame.display.flip()
 
     def check_collision(self):
-        if self.obstacle.rect.x+self.obstacle.WIDTH>self.player.rect.x and self.obstacle.rect.x<self.player.rect.x+50:
-            if not self.player.in_air:
+        if self.obstacle.rect.x+self.obstacle.WIDTH-15>self.player.rect.x and self.obstacle.rect.x<self.player.rect.x+50:
+            if not self.player.in_air or self.player.on_ground:
                 self.playing = False
             else:
                 pass
         else:
             pass
+
+    def update_velocity(self, speed):
+        self.obstacle.set_vel(speed)
+        self.backdrop.set_vel(speed)
+        self.backdrop2.set_vel(speed)
+        
     
 
 game= Game()

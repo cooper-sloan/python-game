@@ -5,10 +5,11 @@ class Obstacle(pygame.sprite.Sprite):
         self.WIDTH=25
         self.HEIGHT=25
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.Surface([self.WIDTH, self.HEIGHT])
-        self.image.fill((0,100,0))
+        #self.image = pygame.Surface([self.WIDTH, self.HEIGHT])
+        #self.image.fill((0,100,0))
+        self.image = pygame.image.load("spikes.png").convert_alpha()
         self.rect = self.image.get_rect()
-        self.rect.x, self.rect.y = (750, 325)
+        self.rect.x, self.rect.y = (750, 330)
         self.vel=vel
         self.score=0
 
