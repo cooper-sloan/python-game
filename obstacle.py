@@ -1,4 +1,4 @@
-import pygame
+import pygame, random
 
 class Obstacle(pygame.sprite.Sprite):
     def __init__(self, vel):
@@ -23,9 +23,13 @@ class Obstacle(pygame.sprite.Sprite):
     def move(self):
         self.set_pos(self.rect.x-self.vel, self.rect.y)
         if self.rect.x < 0:
+            i = random.random()
+            print i 
+            if i >= .5:
+                self.switch_loc()
             self.rect.x = 850
-            self.switch_loc()
             self.score+=1
+            
 
     def set_vel(self, vel):
         self.vel =vel
@@ -34,6 +38,7 @@ class Obstacle(pygame.sprite.Sprite):
         self.vel =10
 
     def switch_loc(self):
+        
         if self.is_up:
             self.set_pos(self.rect.x, self.rect.y+15)
             self.is_up=False

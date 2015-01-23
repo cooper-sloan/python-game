@@ -44,12 +44,13 @@ class Runner:
         events = [event.type for event in pygame.event.get()]
         while pygame.QUIT not in events:
             self.screen.fill((0,100,150))
-            if pygame.MOUSEBUTTONDOWN in events:
-                if self.obstacle.is_up:
+            if pygame.KEYDOWN in events:
+                if event.key == pygame.K_DOWN and not self.player.in_air:
                     self.player.roll()
-                else:
+                elif event.key == pygame.K_UP and not (self.player.in_air or self.player.on_ground):
                     self.player.jump()
-            #time.sleep(.01)
+            
+            time.sleep(.01)
 
             #Check for collisions
             self.check_collision()
