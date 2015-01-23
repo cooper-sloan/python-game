@@ -9,7 +9,7 @@ class Obstacle(pygame.sprite.Sprite):
         #self.image.fill((0,100,0))
         self.image = pygame.image.load("spikes.png").convert_alpha()
         self.rect = self.image.get_rect()
-        self.rect.x, self.rect.y = (750, 330)
+        self.rect.x, self.rect.y = (750, 340)
         self.vel=vel
         self.score=0
         self.is_up = False

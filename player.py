@@ -97,7 +97,7 @@ class Player(pygame.sprite.Sprite):
 
     def jump(self):
         if self.in_air == False:
-            self.set_pos(self.rect.x, self.rect.y-48)
+            self.set_pos(self.rect.x, self.rect.y-38)
             self.in_air = True
 
     def roll(self):
