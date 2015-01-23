@@ -2,6 +2,7 @@ import pygame, sys, time, pygame.mixer
 from player import *
 from obstacle import *
 from backgound import *
+from game_menu import *
 from pygame.locals import *
 
 #----------------------------------------------------------
@@ -20,11 +21,12 @@ class Game:
         self.screen.fill((0,0,0))
 
 class Runner:
-    def __init__(self, screen):     
+    def __init__(self, screen, difficulty):     
         self.screen = screen
         self.screen.fill((0,100,150))
         self.playing = True
         self.speed = 10
+        self.difficulty = difficulty
 
         pygame.font.init()
         self.font = pygame.font.Font(None, 60)
@@ -49,6 +51,7 @@ class Runner:
 
     def main_loop(self):
         events = [event.type for event in pygame.event.get()]
+        self.update_velocity(10*self.difficulty)
         while pygame.QUIT not in events:
             self.screen.fill((0,100,150))
             if pygame.KEYDOWN in events:
@@ -63,7 +66,7 @@ class Runner:
             elif pygame.KEYUP in events and self.playing:
                 runningSound.play()
             
-            time.sleep(.03)
+            time.sleep(.01)
             
             #Check if sound is playing
             if self.playLose:
@@ -77,12 +80,21 @@ class Runner:
 
             #Lose condition
             else:
+
                 #losingSound.play()
                 runningSound.stop()
+                print run.obstacle.score
+
+                self.difficulty = lose(run.obstacle.score)
+                print self.difficulty
+                restart_main_loop(self.difficulty)
+                
+                """
                 ren=self.font.render("You lose! Score: " + str(run.obstacle.score)+ "   Click to restart", 0 ,(255,0,0))
                 self.screen.blit(ren, (10,10))
                 pygame.display.flip()
 
+                
                 #Restart game, reset character
                 if pygame.MOUSEBUTTONDOWN in events:
                     self.playing = True
@@ -91,7 +103,10 @@ class Runner:
                     self.obstacle.score=0
                     self.update_velocity(10)
                     print "reset"
-                    
+                
+                
+                """
+
             events = [event.type for event in pygame.event.get()]
         pygame.quit()
 
@@ -100,7 +115,7 @@ class Runner:
     def update(self):
         z = self.obstacle.score
         if z > 5:
-            self.update_velocity(10 + (.7)*z)
+            self.update_velocity(10 + (.7)*z*self.difficulty)
         """
         if self.obstacle.score>5:
             self.update_velocity(15)
@@ -116,6 +131,8 @@ class Runner:
         self.players.draw(self.screen)
         self.backdrop.move()
         self.backdrop2.move()
+        ren=self.font.render("Score: " + str(run.obstacle.score)+ " ", 0 ,(255,255,255))
+        self.screen.blit(ren, (15,15))
         if self.player.in_air:
             self.player.tick()
         if self.player.on_ground:
@@ -130,7 +147,7 @@ class Runner:
                 pass
             else:   
                 if self.obstacle.score>0:
-                    #self.playLose = True
+                    self.playLose = True
                     self.playing = False
         else:
             pass
@@ -139,10 +156,25 @@ class Runner:
         self.obstacle.set_vel(speed)
         #self.backdrop.set_vel(speed)
         #self.backdrop2.set_vel(speed)
-        
-    
 
+def lose(score):
+	lose_options = ('Game Over', 'Your Score is ' + str(score), 'Regular', 'Hard', 'Extreme', 'QUIT')
+	functions = {'Game Over': Pass, 'Regular': Pass, 'Hard': Pass, 'Extreme': Pass, 'QUIT': sys.exit}
+	lose_menu = Menu(screen, lose_options, functions, score)
+	difficulty = lose_menu.menu_intro()
+	return difficulty
+
+def restart_main_loop(difficulty):
+	run2 = Runner(game.screen, difficulty)
+	run2.main_loop()
+
+
+
+intro = Menu(screen, menu_options, functions, 0)
+difficulty = intro.menu_intro()
 game= Game()
-run = Runner(game.screen)
+print difficulty
+run = Runner(game.screen, difficulty)
 run.main_loop()
 print run.obstacle.score
+
